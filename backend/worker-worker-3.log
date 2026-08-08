@@ -1,0 +1,9 @@
+----------------------------------------
+Worker starting...
+ID: worker-3
+Port: 8083
+Version: v1
+Failure Mode: NORMAL
+----------------------------------------
+Loaded 4 processed work IDs from processed-work-worker-3.json
+Worker is listening on port 8083

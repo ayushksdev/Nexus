@@ -1,0 +1,12 @@
+
+> frontend@0.0.0 dev
+> vite --port 5173
+
+
+  VITE v8.2.1  ready in 1573 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+1:55:09 PM [vite] (client) hmr update /src/App.jsx, /src/index.css
+1:59:18 PM [vite] (client) [console.error] Failed to fetch data from NEXUS backend TypeError: Failed to fetch
+    at fetchData (http://localhost:5173/src/App.jsx:43:6)
