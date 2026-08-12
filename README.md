@@ -35,15 +35,15 @@ NEXUS is a small but convincing reliability and orchestration platform designed 
               └────────────┼────────────┘
                            │
                            ▼
-                ┌──────────────────────┐
-                │      SQLite DB        │
-                │                      │
-                │ Work                 │
-                │ Workers              │
-                │ Releases             │
-                │ Events               │
-                │ Attempts             │
-                └──────────────────────┘
+                 ┌──────────────────────┐
+                 │    PostgreSQL DB     │
+                 │                      │
+                 │ Work                 │
+                 │ Workers              │
+                 │ Releases             │
+                 │ Events               │
+                 │ Attempts             │
+                 └──────────────────────┘
 
                            ▲
                            │
@@ -63,7 +63,7 @@ NEXUS is a small but convincing reliability and orchestration platform designed 
 
 ## 2. Core Design Decisions
 
-- **Durability**: Accepted work is saved to SQLite *before* acknowledging the request, guaranteeing that jobs survive platform restarts.
+- **Durability**: Accepted work is saved to PostgreSQL *before* acknowledging the request, guaranteeing that jobs survive platform restarts.
 - **Idempotency**: Workers maintain a local `.json` transaction file recording job executions, preventing repeat side effects if a job is delivered multiple times.
 - **Bounded Retry**: Job failures trigger exponential backoff retries. Once retries hit their threshold, the job is marked `FAILED` rather than looping forever.
 - **Bounded Worker Recovery**: When a worker crashes, NEXUS restarts it with backoff. If it fails 5 times, it is placed `OUT_OF_SERVICE` to prevent infinite resource loops. A 30s settling period ensures a worker is truly healthy before resetting its budget.
@@ -76,11 +76,11 @@ NEXUS is a small but convincing reliability and orchestration platform designed 
 
 | Requirement | Implementation Details | Demo Action |
 |:---|:---|:---|
-| **R-01 Accepted work is safe** | Persisted to SQLite before HTTP 202 is returned | Restart NEXUS JVM; jobs remain |
+| **R-01 Accepted work is safe** | Persisted to PostgreSQL before HTTP 202 is returned | Restart NEXUS JVM; jobs remain |
 | **R-02 Work ends somewhere** | Terminal states `SUCCESS` or `FAILED` | Check failed work panel |
 | **R-03 Double delivery harmless** | Worker tracks completed IDs in local JSON | Send duplicate job via Failure Lab |
 | **R-04 Retry has limit** | Job retries capped (max 5) with exponential backoff | Set worker to Crash; watch retries stop |
-| **R-05 Ask about the past** | Structured event log table in SQLite | View timeline on Dashboard |
+| **R-05 Ask about the past** | Structured event log table in PostgreSQL | View timeline on Dashboard |
 | **R-06 Releases undone** | Metadata tracks current/previous versions | Click Rollback in Release Panel |
 | **R-07 Releases linked** | Release ID stamped on worker events | Compare release & crash times on timeline |
 | **R-11 Recovery does no harm** | Health checks run every 2s; settling checks for 30s | Bounded restart limits and OUT_OF_SERVICE |
@@ -91,7 +91,7 @@ NEXUS is a small but convincing reliability and orchestration platform designed 
 
 ## 4. How to Run
 
-Ensure Java 21 and Node (with npm) are installed. Run entirely on one machine without internet.
+Ensure Java 21, Node (with npm), and **Docker** are installed and running. NEXUS uses a local PostgreSQL database hosted in a Docker container (`nexus-postgres` mapped to port `5432`).
 
 ### Quick Start (Automatic Script)
 ```bash
