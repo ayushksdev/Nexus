@@ -2,7 +2,8 @@
 
 # Simple job submission script for NEXUS
 
-PORT=8080
+BACKEND_HOST=${BACKEND_HOST:-localhost}
+PORT=${PORT:-8080}
 JOB_ID=$1
 JOB_TYPE=$2
 
@@ -17,10 +18,10 @@ fi
 echo "Submitting job to NEXUS..."
 echo "ID: $JOB_ID"
 echo "Type: $JOB_TYPE"
-echo "URL: http://localhost:$PORT/api/work"
+echo "URL: http://$BACKEND_HOST:$PORT/api/work"
 echo "----------------------------------------"
 
-curl -X POST http://localhost:$PORT/api/work \
+curl -X POST http://$BACKEND_HOST:$PORT/api/work \
   -H "Content-Type: application/json" \
   -d "{
     \"id\": \"$JOB_ID\",

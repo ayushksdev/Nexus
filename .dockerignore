@@ -1,0 +1,9 @@
+node_modules/
+**/node_modules/
+target/
+**/target/
+dist/
+**/dist/
+*.log
+**/processed-work-*.json
+.git/

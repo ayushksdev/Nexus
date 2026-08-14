@@ -1,9 +1,0 @@
-----------------------------------------
-Worker starting...
-ID: worker-1
-Port: 8081
-Version: v1
-Failure Mode: CRASH
-----------------------------------------
-Loaded 1 processed work IDs from processed-work-worker-1.json
-Worker is listening on port 8081

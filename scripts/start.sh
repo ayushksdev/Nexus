@@ -9,6 +9,20 @@ echo "============================================="
 echo "        STARTING NEXUS PLATFORM"
 echo "============================================="
 
+# 0. Ensure PostgreSQL is running
+echo "Checking PostgreSQL database..."
+if [ "$(docker ps -q -f name=nexus-postgres)" ]; then
+  echo "✅ PostgreSQL Docker container is already running."
+elif [ "$(docker ps -aq -f status=exited -f name=nexus-postgres)" ]; then
+  echo "Starting existing PostgreSQL Docker container..."
+  docker start nexus-postgres > /dev/null
+  echo "✅ PostgreSQL Docker container started."
+else
+  echo "🚀 PostgreSQL Docker container 'nexus-postgres' not found. Creating a new one..."
+  docker run --name nexus-postgres -e POSTGRES_DB=nexusdb -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:15-alpine > /dev/null
+  echo "✅ PostgreSQL Docker database container created and started."
+fi
+
 # 1. Start Backend
 echo "Building backend..."
 cd "$PROJECT_ROOT/backend"
